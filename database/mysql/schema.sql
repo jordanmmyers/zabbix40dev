@@ -16,7 +16,7 @@ CREATE TABLE `users` (
 	`attempt_clock`          integer         DEFAULT 0                 NOT NULL,
 	`rows_per_page`          integer         DEFAULT 50                NOT NULL,
 	PRIMARY KEY (userid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `users_1` ON `users` (`alias`);
 CREATE TABLE `maintenances` (
 	`maintenanceid`          bigint unsigned                           NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE `maintenances` (
 	`active_since`           integer         DEFAULT '0'               NOT NULL,
 	`active_till`            integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (maintenanceid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `maintenances_1` ON `maintenances` (`active_since`,`active_till`);
 CREATE UNIQUE INDEX `maintenances_2` ON `maintenances` (`name`);
 CREATE TABLE `hosts` (
@@ -35,7 +35,7 @@ CREATE TABLE `hosts` (
 	`host`                   varchar(128)    DEFAULT ''                NOT NULL,
 	`status`                 integer         DEFAULT '0'               NOT NULL,
 	`disable_until`          integer         DEFAULT '0'               NOT NULL,
-	`error`                  varchar(2048)   DEFAULT ''                NOT NULL,
+	`error`                  text                                      NULL,
 	`available`              integer         DEFAULT '0'               NOT NULL,
 	`errors_from`            integer         DEFAULT '0'               NOT NULL,
 	`lastaccess`             integer         DEFAULT '0'               NOT NULL,
@@ -53,26 +53,26 @@ CREATE TABLE `hosts` (
 	`maintenance_from`       integer         DEFAULT '0'               NOT NULL,
 	`ipmi_errors_from`       integer         DEFAULT '0'               NOT NULL,
 	`snmp_errors_from`       integer         DEFAULT '0'               NOT NULL,
-	`ipmi_error`             varchar(2048)   DEFAULT ''                NOT NULL,
-	`snmp_error`             varchar(2048)   DEFAULT ''                NOT NULL,
+	`ipmi_error`             text                                      NULL,
+	`snmp_error`             text                                      NULL,
 	`jmx_disable_until`      integer         DEFAULT '0'               NOT NULL,
 	`jmx_available`          integer         DEFAULT '0'               NOT NULL,
 	`jmx_errors_from`        integer         DEFAULT '0'               NOT NULL,
-	`jmx_error`              varchar(2048)   DEFAULT ''                NOT NULL,
+	`jmx_error`              text                                      NULL,
 	`name`                   varchar(128)    DEFAULT ''                NOT NULL,
 	`flags`                  integer         DEFAULT '0'               NOT NULL,
 	`templateid`             bigint unsigned                           NULL,
 	`description`            text                                      NOT NULL,
 	`tls_connect`            integer         DEFAULT '1'               NOT NULL,
 	`tls_accept`             integer         DEFAULT '1'               NOT NULL,
-	`tls_issuer`             varchar(1024)   DEFAULT ''                NOT NULL,
-	`tls_subject`            varchar(1024)   DEFAULT ''                NOT NULL,
+	`tls_issuer`             text                                      NULL,
+	`tls_subject`            text                                      NULL,
 	`tls_psk_identity`       varchar(128)    DEFAULT ''                NOT NULL,
-	`tls_psk`                varchar(512)    DEFAULT ''                NOT NULL,
+	`tls_psk`                text                                      NULL,
 	`proxy_address`          varchar(255)    DEFAULT ''                NOT NULL,
 	`auto_compress`          integer         DEFAULT '1'               NOT NULL,
 	PRIMARY KEY (hostid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `hosts_1` ON `hosts` (`host`);
 CREATE INDEX `hosts_2` ON `hosts` (`status`);
 CREATE INDEX `hosts_3` ON `hosts` (`proxy_hostid`);
@@ -84,7 +84,7 @@ CREATE TABLE `groups` (
 	`internal`               integer         DEFAULT '0'               NOT NULL,
 	`flags`                  integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (groupid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `groups_1` ON `groups` (`name`);
 CREATE TABLE `group_prototype` (
 	`group_prototypeid`      bigint unsigned                           NOT NULL,
@@ -93,7 +93,7 @@ CREATE TABLE `group_prototype` (
 	`groupid`                bigint unsigned                           NULL,
 	`templateid`             bigint unsigned                           NULL,
 	PRIMARY KEY (group_prototypeid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `group_prototype_1` ON `group_prototype` (`hostid`);
 CREATE TABLE `group_discovery` (
 	`groupid`                bigint unsigned                           NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE `group_discovery` (
 	`lastcheck`              integer         DEFAULT '0'               NOT NULL,
 	`ts_delete`              integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (groupid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `screens` (
 	`screenid`               bigint unsigned                           NOT NULL,
 	`name`                   varchar(255)                              NOT NULL,
@@ -112,7 +112,7 @@ CREATE TABLE `screens` (
 	`userid`                 bigint unsigned                           NULL,
 	`private`                integer         DEFAULT '1'               NOT NULL,
 	PRIMARY KEY (screenid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `screens_1` ON `screens` (`templateid`);
 CREATE TABLE `screens_items` (
 	`screenitemid`           bigint unsigned                           NOT NULL,
@@ -135,7 +135,7 @@ CREATE TABLE `screens_items` (
 	`application`            varchar(255)    DEFAULT ''                NOT NULL,
 	`max_columns`            integer         DEFAULT '3'               NOT NULL,
 	PRIMARY KEY (screenitemid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `screens_items_1` ON `screens_items` (`screenid`);
 CREATE TABLE `screen_user` (
 	`screenuserid`           bigint unsigned                           NOT NULL,
@@ -143,7 +143,7 @@ CREATE TABLE `screen_user` (
 	`userid`                 bigint unsigned                           NOT NULL,
 	`permission`             integer         DEFAULT '2'               NOT NULL,
 	PRIMARY KEY (screenuserid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `screen_user_1` ON `screen_user` (`screenid`,`userid`);
 CREATE TABLE `screen_usrgrp` (
 	`screenusrgrpid`         bigint unsigned                           NOT NULL,
@@ -151,7 +151,7 @@ CREATE TABLE `screen_usrgrp` (
 	`usrgrpid`               bigint unsigned                           NOT NULL,
 	`permission`             integer         DEFAULT '2'               NOT NULL,
 	PRIMARY KEY (screenusrgrpid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `screen_usrgrp_1` ON `screen_usrgrp` (`screenid`,`usrgrpid`);
 CREATE TABLE `slideshows` (
 	`slideshowid`            bigint unsigned                           NOT NULL,
@@ -160,7 +160,7 @@ CREATE TABLE `slideshows` (
 	`userid`                 bigint unsigned                           NOT NULL,
 	`private`                integer         DEFAULT '1'               NOT NULL,
 	PRIMARY KEY (slideshowid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `slideshows_1` ON `slideshows` (`name`);
 CREATE TABLE `slideshow_user` (
 	`slideshowuserid`        bigint unsigned                           NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE `slideshow_user` (
 	`userid`                 bigint unsigned                           NOT NULL,
 	`permission`             integer         DEFAULT '2'               NOT NULL,
 	PRIMARY KEY (slideshowuserid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `slideshow_user_1` ON `slideshow_user` (`slideshowid`,`userid`);
 CREATE TABLE `slideshow_usrgrp` (
 	`slideshowusrgrpid`      bigint unsigned                           NOT NULL,
@@ -176,7 +176,7 @@ CREATE TABLE `slideshow_usrgrp` (
 	`usrgrpid`               bigint unsigned                           NOT NULL,
 	`permission`             integer         DEFAULT '2'               NOT NULL,
 	PRIMARY KEY (slideshowusrgrpid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `slideshow_usrgrp_1` ON `slideshow_usrgrp` (`slideshowid`,`usrgrpid`);
 CREATE TABLE `slides` (
 	`slideid`                bigint unsigned                           NOT NULL,
@@ -185,19 +185,19 @@ CREATE TABLE `slides` (
 	`step`                   integer         DEFAULT '0'               NOT NULL,
 	`delay`                  varchar(32)     DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (slideid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `slides_1` ON `slides` (`slideshowid`);
 CREATE INDEX `slides_2` ON `slides` (`screenid`);
 CREATE TABLE `drules` (
 	`druleid`                bigint unsigned                           NOT NULL,
 	`proxy_hostid`           bigint unsigned                           NULL,
 	`name`                   varchar(255)    DEFAULT ''                NOT NULL,
-	`iprange`                varchar(2048)   DEFAULT ''                NOT NULL,
-	`delay`                  varchar(255)    DEFAULT '1h'              NOT NULL,
+	`iprange`                text                                      NULL,
+	`delay`                  varchar(32)     DEFAULT '1h'              NOT NULL,
 	`nextcheck`              integer         DEFAULT '0'               NOT NULL,
 	`status`                 integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (druleid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `drules_1` ON `drules` (`proxy_hostid`);
 CREATE UNIQUE INDEX `drules_2` ON `drules` (`name`);
 CREATE TABLE `dchecks` (
@@ -216,7 +216,7 @@ CREATE TABLE `dchecks` (
 	`snmpv3_privprotocol`    integer         DEFAULT '0'               NOT NULL,
 	`snmpv3_contextname`     varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (dcheckid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `dchecks_1` ON `dchecks` (`druleid`);
 CREATE TABLE `applications` (
 	`applicationid`          bigint unsigned                           NOT NULL,
@@ -224,14 +224,14 @@ CREATE TABLE `applications` (
 	`name`                   varchar(255)    DEFAULT ''                NOT NULL,
 	`flags`                  integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (applicationid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `applications_2` ON `applications` (`hostid`,`name`);
 CREATE TABLE `httptest` (
 	`httptestid`             bigint unsigned                           NOT NULL,
 	`name`                   varchar(64)     DEFAULT ''                NOT NULL,
 	`applicationid`          bigint unsigned                           NULL,
 	`nextcheck`              integer         DEFAULT '0'               NOT NULL,
-	`delay`                  varchar(255)    DEFAULT '1m'              NOT NULL,
+	`delay`                  varchar(32)     DEFAULT '1m'              NOT NULL,
 	`status`                 integer         DEFAULT '0'               NOT NULL,
 	`agent`                  varchar(255)    DEFAULT 'Zabbix'          NOT NULL,
 	`authentication`         integer         DEFAULT '0'               NOT NULL,
@@ -247,7 +247,7 @@ CREATE TABLE `httptest` (
 	`verify_peer`            integer         DEFAULT '0'               NOT NULL,
 	`verify_host`            integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (httptestid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `httptest_1` ON `httptest` (`applicationid`);
 CREATE UNIQUE INDEX `httptest_2` ON `httptest` (`hostid`,`name`);
 CREATE INDEX `httptest_3` ON `httptest` (`status`);
@@ -257,7 +257,7 @@ CREATE TABLE `httpstep` (
 	`httptestid`             bigint unsigned                           NOT NULL,
 	`name`                   varchar(64)     DEFAULT ''                NOT NULL,
 	`no`                     integer         DEFAULT '0'               NOT NULL,
-	`url`                    varchar(2048)   DEFAULT ''                NOT NULL,
+	`url`                    text                                      NULL,
 	`timeout`                varchar(255)    DEFAULT '15s'             NOT NULL,
 	`posts`                  text                                      NOT NULL,
 	`required`               varchar(255)    DEFAULT ''                NOT NULL,
@@ -266,7 +266,7 @@ CREATE TABLE `httpstep` (
 	`retrieve_mode`          integer         DEFAULT '0'               NOT NULL,
 	`post_type`              integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (httpstepid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `httpstep_1` ON `httpstep` (`httptestid`);
 CREATE TABLE `interface` (
 	`interfaceid`            bigint unsigned                           NOT NULL,
@@ -279,26 +279,26 @@ CREATE TABLE `interface` (
 	`port`                   varchar(64)     DEFAULT '10050'           NOT NULL,
 	`bulk`                   integer         DEFAULT '1'               NOT NULL,
 	PRIMARY KEY (interfaceid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `interface_1` ON `interface` (`hostid`,`type`);
 CREATE INDEX `interface_2` ON `interface` (`ip`,`dns`);
 CREATE TABLE `valuemaps` (
 	`valuemapid`             bigint unsigned                           NOT NULL,
 	`name`                   varchar(64)     DEFAULT ''                NOT NULL,
 	PRIMARY KEY (valuemapid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `valuemaps_1` ON `valuemaps` (`name`);
 CREATE TABLE `items` (
 	`itemid`                 bigint unsigned                           NOT NULL,
 	`type`                   integer         DEFAULT '0'               NOT NULL,
 	`snmp_community`         varchar(64)     DEFAULT ''                NOT NULL,
-	`snmp_oid`               varchar(512)    DEFAULT ''                NOT NULL,
+	`snmp_oid`               text                                      NULL,
 	`hostid`                 bigint unsigned                           NOT NULL,
 	`name`                   varchar(255)    DEFAULT ''                NOT NULL,
 	`key_`                   varchar(255)    DEFAULT ''                NOT NULL,
-	`delay`                  varchar(1024)   DEFAULT '0'               NOT NULL,
-	`history`                varchar(255)    DEFAULT '90d'             NOT NULL,
-	`trends`                 varchar(255)    DEFAULT '365d'            NOT NULL,
+	`delay`                  varchar(32)     DEFAULT '0'               NOT NULL,
+	`history`                varchar(32)     DEFAULT '90d'             NOT NULL,
+	`trends`                 varchar(32)     DEFAULT '365d'            NOT NULL,
 	`status`                 integer         DEFAULT '0'               NOT NULL,
 	`value_type`             integer         DEFAULT '0'               NOT NULL,
 	`trapper_hosts`          varchar(255)    DEFAULT ''                NOT NULL,
@@ -308,7 +308,7 @@ CREATE TABLE `items` (
 	`snmpv3_authpassphrase`  varchar(64)     DEFAULT ''                NOT NULL,
 	`snmpv3_privpassphrase`  varchar(64)     DEFAULT ''                NOT NULL,
 	`formula`                varchar(255)    DEFAULT ''                NOT NULL,
-	`error`                  varchar(2048)   DEFAULT ''                NOT NULL,
+	`error`                  text                                      NULL,
 	`lastlogsize`            bigint unsigned DEFAULT '0'               NOT NULL,
 	`logtimefmt`             varchar(64)     DEFAULT ''                NOT NULL,
 	`templateid`             bigint unsigned                           NULL,
@@ -326,7 +326,7 @@ CREATE TABLE `items` (
 	`port`                   varchar(64)     DEFAULT ''                NOT NULL,
 	`description`            text                                      NOT NULL,
 	`inventory_link`         integer         DEFAULT '0'               NOT NULL,
-	`lifetime`               varchar(255)    DEFAULT '30d'             NOT NULL,
+	`lifetime`               varchar(32)     DEFAULT '30d'             NOT NULL,
 	`snmpv3_authprotocol`    integer         DEFAULT '0'               NOT NULL,
 	`snmpv3_privprotocol`    integer         DEFAULT '0'               NOT NULL,
 	`state`                  integer         DEFAULT '0'               NOT NULL,
@@ -334,9 +334,9 @@ CREATE TABLE `items` (
 	`evaltype`               integer         DEFAULT '0'               NOT NULL,
 	`jmx_endpoint`           varchar(255)    DEFAULT ''                NOT NULL,
 	`master_itemid`          bigint unsigned                           NULL,
-	`timeout`                varchar(255)    DEFAULT '3s'              NOT NULL,
-	`url`                    varchar(2048)   DEFAULT ''                NOT NULL,
-	`query_fields`           varchar(2048)   DEFAULT ''                NOT NULL,
+	`timeout`                varchar(32)     DEFAULT '3s'              NOT NULL,
+	`url`                    text                                      NULL,
+	`query_fields`           text                                      NULL,
 	`posts`                  text                                      NOT NULL,
 	`status_codes`           varchar(255)    DEFAULT '200'             NOT NULL,
 	`follow_redirects`       integer         DEFAULT '1'               NOT NULL,
@@ -353,7 +353,7 @@ CREATE TABLE `items` (
 	`verify_host`            integer         DEFAULT '0'               NOT NULL,
 	`allow_traps`            integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (itemid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `items_1` ON `items` (`hostid`,`key_`);
 CREATE INDEX `items_3` ON `items` (`status`);
 CREATE INDEX `items_4` ON `items` (`templateid`);
@@ -366,7 +366,7 @@ CREATE TABLE `httpstepitem` (
 	`itemid`                 bigint unsigned                           NOT NULL,
 	`type`                   integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (httpstepitemid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `httpstepitem_1` ON `httpstepitem` (`httpstepid`,`itemid`);
 CREATE INDEX `httpstepitem_2` ON `httpstepitem` (`itemid`);
 CREATE TABLE `httptestitem` (
@@ -375,7 +375,7 @@ CREATE TABLE `httptestitem` (
 	`itemid`                 bigint unsigned                           NOT NULL,
 	`type`                   integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (httptestitemid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `httptestitem_1` ON `httptestitem` (`httptestid`,`itemid`);
 CREATE INDEX `httptestitem_2` ON `httptestitem` (`itemid`);
 CREATE TABLE `media_type` (
@@ -400,7 +400,7 @@ CREATE TABLE `media_type` (
 	`maxattempts`            integer         DEFAULT '3'               NOT NULL,
 	`attempt_interval`       varchar(32)     DEFAULT '10s'             NOT NULL,
 	PRIMARY KEY (mediatypeid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `media_type_1` ON `media_type` (`description`);
 CREATE TABLE `usrgrp` (
 	`usrgrpid`               bigint unsigned                           NOT NULL,
@@ -409,14 +409,14 @@ CREATE TABLE `usrgrp` (
 	`users_status`           integer         DEFAULT '0'               NOT NULL,
 	`debug_mode`             integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (usrgrpid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `usrgrp_1` ON `usrgrp` (`name`);
 CREATE TABLE `users_groups` (
 	`id`                     bigint unsigned                           NOT NULL,
 	`usrgrpid`               bigint unsigned                           NOT NULL,
 	`userid`                 bigint unsigned                           NOT NULL,
 	PRIMARY KEY (id)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `users_groups_1` ON `users_groups` (`usrgrpid`,`userid`);
 CREATE INDEX `users_groups_2` ON `users_groups` (`userid`);
 CREATE TABLE `scripts` (
@@ -431,7 +431,7 @@ CREATE TABLE `scripts` (
 	`type`                   integer         DEFAULT '0'               NOT NULL,
 	`execute_on`             integer         DEFAULT '2'               NOT NULL,
 	PRIMARY KEY (scriptid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `scripts_1` ON `scripts` (`usrgrpid`);
 CREATE INDEX `scripts_2` ON `scripts` (`groupid`);
 CREATE UNIQUE INDEX `scripts_3` ON `scripts` (`name`);
@@ -451,7 +451,7 @@ CREATE TABLE `actions` (
 	`ack_shortdata`          varchar(255)    DEFAULT ''                NOT NULL,
 	`ack_longdata`           text                                      NOT NULL,
 	PRIMARY KEY (actionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `actions_1` ON `actions` (`eventsource`,`status`);
 CREATE UNIQUE INDEX `actions_2` ON `actions` (`name`);
 CREATE TABLE `operations` (
@@ -464,7 +464,7 @@ CREATE TABLE `operations` (
 	`evaltype`               integer         DEFAULT '0'               NOT NULL,
 	`recovery`               integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (operationid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `operations_1` ON `operations` (`actionid`);
 CREATE TABLE `opmessage` (
 	`operationid`            bigint unsigned                           NOT NULL,
@@ -473,14 +473,14 @@ CREATE TABLE `opmessage` (
 	`message`                text                                      NOT NULL,
 	`mediatypeid`            bigint unsigned                           NULL,
 	PRIMARY KEY (operationid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `opmessage_1` ON `opmessage` (`mediatypeid`);
 CREATE TABLE `opmessage_grp` (
 	`opmessage_grpid`        bigint unsigned                           NOT NULL,
 	`operationid`            bigint unsigned                           NOT NULL,
 	`usrgrpid`               bigint unsigned                           NOT NULL,
 	PRIMARY KEY (opmessage_grpid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `opmessage_grp_1` ON `opmessage_grp` (`operationid`,`usrgrpid`);
 CREATE INDEX `opmessage_grp_2` ON `opmessage_grp` (`usrgrpid`);
 CREATE TABLE `opmessage_usr` (
@@ -488,7 +488,7 @@ CREATE TABLE `opmessage_usr` (
 	`operationid`            bigint unsigned                           NOT NULL,
 	`userid`                 bigint unsigned                           NOT NULL,
 	PRIMARY KEY (opmessage_usrid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `opmessage_usr_1` ON `opmessage_usr` (`operationid`,`userid`);
 CREATE INDEX `opmessage_usr_2` ON `opmessage_usr` (`userid`);
 CREATE TABLE `opcommand` (
@@ -504,14 +504,14 @@ CREATE TABLE `opcommand` (
 	`privatekey`             varchar(64)     DEFAULT ''                NOT NULL,
 	`command`                text                                      NOT NULL,
 	PRIMARY KEY (operationid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `opcommand_1` ON `opcommand` (`scriptid`);
 CREATE TABLE `opcommand_hst` (
 	`opcommand_hstid`        bigint unsigned                           NOT NULL,
 	`operationid`            bigint unsigned                           NOT NULL,
 	`hostid`                 bigint unsigned                           NULL,
 	PRIMARY KEY (opcommand_hstid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `opcommand_hst_1` ON `opcommand_hst` (`operationid`);
 CREATE INDEX `opcommand_hst_2` ON `opcommand_hst` (`hostid`);
 CREATE TABLE `opcommand_grp` (
@@ -519,7 +519,7 @@ CREATE TABLE `opcommand_grp` (
 	`operationid`            bigint unsigned                           NOT NULL,
 	`groupid`                bigint unsigned                           NOT NULL,
 	PRIMARY KEY (opcommand_grpid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `opcommand_grp_1` ON `opcommand_grp` (`operationid`);
 CREATE INDEX `opcommand_grp_2` ON `opcommand_grp` (`groupid`);
 CREATE TABLE `opgroup` (
@@ -527,7 +527,7 @@ CREATE TABLE `opgroup` (
 	`operationid`            bigint unsigned                           NOT NULL,
 	`groupid`                bigint unsigned                           NOT NULL,
 	PRIMARY KEY (opgroupid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `opgroup_1` ON `opgroup` (`operationid`,`groupid`);
 CREATE INDEX `opgroup_2` ON `opgroup` (`groupid`);
 CREATE TABLE `optemplate` (
@@ -535,7 +535,7 @@ CREATE TABLE `optemplate` (
 	`operationid`            bigint unsigned                           NOT NULL,
 	`templateid`             bigint unsigned                           NOT NULL,
 	PRIMARY KEY (optemplateid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `optemplate_1` ON `optemplate` (`operationid`,`templateid`);
 CREATE INDEX `optemplate_2` ON `optemplate` (`templateid`);
 CREATE TABLE `opconditions` (
@@ -545,7 +545,7 @@ CREATE TABLE `opconditions` (
 	`operator`               integer         DEFAULT '0'               NOT NULL,
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (opconditionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `opconditions_1` ON `opconditions` (`operationid`);
 CREATE TABLE `conditions` (
 	`conditionid`            bigint unsigned                           NOT NULL,
@@ -555,7 +555,7 @@ CREATE TABLE `conditions` (
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	`value2`                 varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (conditionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `conditions_1` ON `conditions` (`actionid`);
 CREATE TABLE `config` (
 	`configid`               bigint unsigned                           NOT NULL,
@@ -620,12 +620,12 @@ CREATE TABLE `config` (
 	`default_inventory_mode` integer         DEFAULT '-1'              NOT NULL,
 	`custom_color`           integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (configid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `config_1` ON `config` (`alert_usrgrpid`);
 CREATE INDEX `config_2` ON `config` (`discovery_groupid`);
 CREATE TABLE `triggers` (
 	`triggerid`              bigint unsigned                           NOT NULL,
-	`expression`             varchar(2048)   DEFAULT ''                NOT NULL,
+	`expression`             text                                      NOT NULL,
 	`description`            varchar(255)    DEFAULT ''                NOT NULL,
 	`url`                    varchar(255)    DEFAULT ''                NOT NULL,
 	`status`                 integer         DEFAULT '0'               NOT NULL,
@@ -633,18 +633,18 @@ CREATE TABLE `triggers` (
 	`priority`               integer         DEFAULT '0'               NOT NULL,
 	`lastchange`             integer         DEFAULT '0'               NOT NULL,
 	`comments`               text                                      NOT NULL,
-	`error`                  varchar(2048)   DEFAULT ''                NOT NULL,
+	`error`                  text                                      NULL,
 	`templateid`             bigint unsigned                           NULL,
 	`type`                   integer         DEFAULT '0'               NOT NULL,
 	`state`                  integer         DEFAULT '0'               NOT NULL,
 	`flags`                  integer         DEFAULT '0'               NOT NULL,
 	`recovery_mode`          integer         DEFAULT '0'               NOT NULL,
-	`recovery_expression`    varchar(2048)   DEFAULT ''                NOT NULL,
+	`recovery_expression`    text                                      NOT NULL,
 	`correlation_mode`       integer         DEFAULT '0'               NOT NULL,
 	`correlation_tag`        varchar(255)    DEFAULT ''                NOT NULL,
 	`manual_close`           integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (triggerid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `triggers_1` ON `triggers` (`status`);
 CREATE INDEX `triggers_2` ON `triggers` (`value`,`lastchange`);
 CREATE INDEX `triggers_3` ON `triggers` (`templateid`);
@@ -653,7 +653,7 @@ CREATE TABLE `trigger_depends` (
 	`triggerid_down`         bigint unsigned                           NOT NULL,
 	`triggerid_up`           bigint unsigned                           NOT NULL,
 	PRIMARY KEY (triggerdepid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `trigger_depends_1` ON `trigger_depends` (`triggerid_down`,`triggerid_up`);
 CREATE INDEX `trigger_depends_2` ON `trigger_depends` (`triggerid_up`);
 CREATE TABLE `functions` (
@@ -663,7 +663,7 @@ CREATE TABLE `functions` (
 	`function`               varchar(12)     DEFAULT ''                NOT NULL,
 	`parameter`              varchar(255)    DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (functionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `functions_1` ON `functions` (`triggerid`);
 CREATE INDEX `functions_2` ON `functions` (`itemid`,`function`,`parameter`);
 CREATE TABLE `graphs` (
@@ -687,7 +687,7 @@ CREATE TABLE `graphs` (
 	`ymax_itemid`            bigint unsigned                           NULL,
 	`flags`                  integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (graphid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `graphs_1` ON `graphs` (`name`);
 CREATE INDEX `graphs_2` ON `graphs` (`templateid`);
 CREATE INDEX `graphs_3` ON `graphs` (`ymin_itemid`);
@@ -703,7 +703,7 @@ CREATE TABLE `graphs_items` (
 	`calc_fnc`               integer         DEFAULT '2'               NOT NULL,
 	`type`                   integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (gitemid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `graphs_items_1` ON `graphs_items` (`itemid`);
 CREATE INDEX `graphs_items_2` ON `graphs_items` (`graphid`);
 CREATE TABLE `graph_theme` (
@@ -721,14 +721,14 @@ CREATE TABLE `graph_theme` (
 	`nonworktimecolor`       varchar(6)      DEFAULT ''                NOT NULL,
 	`colorpalette`           varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (graphthemeid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `graph_theme_1` ON `graph_theme` (`theme`);
 CREATE TABLE `globalmacro` (
 	`globalmacroid`          bigint unsigned                           NOT NULL,
 	`macro`                  varchar(255)    DEFAULT ''                NOT NULL,
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (globalmacroid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `globalmacro_1` ON `globalmacro` (`macro`);
 CREATE TABLE `hostmacro` (
 	`hostmacroid`            bigint unsigned                           NOT NULL,
@@ -736,14 +736,14 @@ CREATE TABLE `hostmacro` (
 	`macro`                  varchar(255)    DEFAULT ''                NOT NULL,
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (hostmacroid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `hostmacro_1` ON `hostmacro` (`hostid`,`macro`);
 CREATE TABLE `hosts_groups` (
 	`hostgroupid`            bigint unsigned                           NOT NULL,
 	`hostid`                 bigint unsigned                           NOT NULL,
 	`groupid`                bigint unsigned                           NOT NULL,
 	PRIMARY KEY (hostgroupid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `hosts_groups_1` ON `hosts_groups` (`hostid`,`groupid`);
 CREATE INDEX `hosts_groups_2` ON `hosts_groups` (`groupid`);
 CREATE TABLE `hosts_templates` (
@@ -751,7 +751,7 @@ CREATE TABLE `hosts_templates` (
 	`hostid`                 bigint unsigned                           NOT NULL,
 	`templateid`             bigint unsigned                           NOT NULL,
 	PRIMARY KEY (hosttemplateid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `hosts_templates_1` ON `hosts_templates` (`hostid`,`templateid`);
 CREATE INDEX `hosts_templates_2` ON `hosts_templates` (`templateid`);
 CREATE TABLE `items_applications` (
@@ -759,7 +759,7 @@ CREATE TABLE `items_applications` (
 	`applicationid`          bigint unsigned                           NOT NULL,
 	`itemid`                 bigint unsigned                           NOT NULL,
 	PRIMARY KEY (itemappid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `items_applications_1` ON `items_applications` (`applicationid`,`itemid`);
 CREATE INDEX `items_applications_2` ON `items_applications` (`itemid`);
 CREATE TABLE `mappings` (
@@ -768,7 +768,7 @@ CREATE TABLE `mappings` (
 	`value`                  varchar(64)     DEFAULT ''                NOT NULL,
 	`newvalue`               varchar(64)     DEFAULT ''                NOT NULL,
 	PRIMARY KEY (mappingid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `mappings_1` ON `mappings` (`valuemapid`);
 CREATE TABLE `media` (
 	`mediaid`                bigint unsigned                           NOT NULL,
@@ -779,7 +779,7 @@ CREATE TABLE `media` (
 	`severity`               integer         DEFAULT '63'              NOT NULL,
 	`period`                 varchar(1024)   DEFAULT '1-7,00:00-24:00' NOT NULL,
 	PRIMARY KEY (mediaid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `media_1` ON `media` (`userid`);
 CREATE INDEX `media_2` ON `media` (`mediatypeid`);
 CREATE TABLE `rights` (
@@ -788,7 +788,7 @@ CREATE TABLE `rights` (
 	`permission`             integer         DEFAULT '0'               NOT NULL,
 	`id`                     bigint unsigned                           NOT NULL,
 	PRIMARY KEY (rightid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `rights_1` ON `rights` (`groupid`);
 CREATE INDEX `rights_2` ON `rights` (`id`);
 CREATE TABLE `services` (
@@ -801,7 +801,7 @@ CREATE TABLE `services` (
 	`goodsla`                double(16,4)    DEFAULT '99.9'            NOT NULL,
 	`sortorder`              integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (serviceid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `services_1` ON `services` (`triggerid`);
 CREATE TABLE `services_links` (
 	`linkid`                 bigint unsigned                           NOT NULL,
@@ -809,7 +809,7 @@ CREATE TABLE `services_links` (
 	`servicedownid`          bigint unsigned                           NOT NULL,
 	`soft`                   integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (linkid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `services_links_1` ON `services_links` (`servicedownid`);
 CREATE UNIQUE INDEX `services_links_2` ON `services_links` (`serviceupid`,`servicedownid`);
 CREATE TABLE `services_times` (
@@ -820,14 +820,14 @@ CREATE TABLE `services_times` (
 	`ts_to`                  integer         DEFAULT '0'               NOT NULL,
 	`note`                   varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (timeid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `services_times_1` ON `services_times` (`serviceid`,`type`,`ts_from`,`ts_to`);
 CREATE TABLE `icon_map` (
 	`iconmapid`              bigint unsigned                           NOT NULL,
 	`name`                   varchar(64)     DEFAULT ''                NOT NULL,
 	`default_iconid`         bigint unsigned                           NOT NULL,
 	PRIMARY KEY (iconmapid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `icon_map_1` ON `icon_map` (`name`);
 CREATE INDEX `icon_map_2` ON `icon_map` (`default_iconid`);
 CREATE TABLE `icon_mapping` (
@@ -838,7 +838,7 @@ CREATE TABLE `icon_mapping` (
 	`expression`             varchar(64)     DEFAULT ''                NOT NULL,
 	`sortorder`              integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (iconmappingid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `icon_mapping_1` ON `icon_mapping` (`iconmapid`);
 CREATE INDEX `icon_mapping_2` ON `icon_mapping` (`iconid`);
 CREATE TABLE `sysmaps` (
@@ -873,7 +873,7 @@ CREATE TABLE `sysmaps` (
 	`userid`                 bigint unsigned                           NOT NULL,
 	`private`                integer         DEFAULT '1'               NOT NULL,
 	PRIMARY KEY (sysmapid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `sysmaps_1` ON `sysmaps` (`name`);
 CREATE INDEX `sysmaps_2` ON `sysmaps` (`backgroundid`);
 CREATE INDEX `sysmaps_3` ON `sysmaps` (`iconmapid`);
@@ -884,7 +884,7 @@ CREATE TABLE `sysmaps_elements` (
 	`elementtype`            integer         DEFAULT '0'               NOT NULL,
 	`iconid_off`             bigint unsigned                           NULL,
 	`iconid_on`              bigint unsigned                           NULL,
-	`label`                  varchar(2048)   DEFAULT ''                NOT NULL,
+	`label`                  text                                      NULL,
 	`label_location`         integer         DEFAULT '-1'              NOT NULL,
 	`x`                      integer         DEFAULT '0'               NOT NULL,
 	`y`                      integer         DEFAULT '0'               NOT NULL,
@@ -898,7 +898,7 @@ CREATE TABLE `sysmaps_elements` (
 	`use_iconmap`            integer         DEFAULT '1'               NOT NULL,
 	`application`            varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (selementid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `sysmaps_elements_1` ON `sysmaps_elements` (`sysmapid`);
 CREATE INDEX `sysmaps_elements_2` ON `sysmaps_elements` (`iconid_off`);
 CREATE INDEX `sysmaps_elements_3` ON `sysmaps_elements` (`iconid_on`);
@@ -911,9 +911,9 @@ CREATE TABLE `sysmaps_links` (
 	`selementid2`            bigint unsigned                           NOT NULL,
 	`drawtype`               integer         DEFAULT '0'               NOT NULL,
 	`color`                  varchar(6)      DEFAULT '000000'          NOT NULL,
-	`label`                  varchar(2048)   DEFAULT ''                NOT NULL,
+	`label`                  text                                      NULL,
 	PRIMARY KEY (linkid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `sysmaps_links_1` ON `sysmaps_links` (`sysmapid`);
 CREATE INDEX `sysmaps_links_2` ON `sysmaps_links` (`selementid1`);
 CREATE INDEX `sysmaps_links_3` ON `sysmaps_links` (`selementid2`);
@@ -924,7 +924,7 @@ CREATE TABLE `sysmaps_link_triggers` (
 	`drawtype`               integer         DEFAULT '0'               NOT NULL,
 	`color`                  varchar(6)      DEFAULT '000000'          NOT NULL,
 	PRIMARY KEY (linktriggerid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `sysmaps_link_triggers_1` ON `sysmaps_link_triggers` (`linkid`,`triggerid`);
 CREATE INDEX `sysmaps_link_triggers_2` ON `sysmaps_link_triggers` (`triggerid`);
 CREATE TABLE `sysmap_element_url` (
@@ -933,7 +933,7 @@ CREATE TABLE `sysmap_element_url` (
 	`name`                   varchar(255)                              NOT NULL,
 	`url`                    varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (sysmapelementurlid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `sysmap_element_url_1` ON `sysmap_element_url` (`selementid`,`name`);
 CREATE TABLE `sysmap_url` (
 	`sysmapurlid`            bigint unsigned                           NOT NULL,
@@ -942,7 +942,7 @@ CREATE TABLE `sysmap_url` (
 	`url`                    varchar(255)    DEFAULT ''                NOT NULL,
 	`elementtype`            integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (sysmapurlid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `sysmap_url_1` ON `sysmap_url` (`sysmapid`,`name`);
 CREATE TABLE `sysmap_user` (
 	`sysmapuserid`           bigint unsigned                           NOT NULL,
@@ -950,7 +950,7 @@ CREATE TABLE `sysmap_user` (
 	`userid`                 bigint unsigned                           NOT NULL,
 	`permission`             integer         DEFAULT '2'               NOT NULL,
 	PRIMARY KEY (sysmapuserid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `sysmap_user_1` ON `sysmap_user` (`sysmapid`,`userid`);
 CREATE TABLE `sysmap_usrgrp` (
 	`sysmapusrgrpid`         bigint unsigned                           NOT NULL,
@@ -958,14 +958,14 @@ CREATE TABLE `sysmap_usrgrp` (
 	`usrgrpid`               bigint unsigned                           NOT NULL,
 	`permission`             integer         DEFAULT '2'               NOT NULL,
 	PRIMARY KEY (sysmapusrgrpid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `sysmap_usrgrp_1` ON `sysmap_usrgrp` (`sysmapid`,`usrgrpid`);
 CREATE TABLE `maintenances_hosts` (
 	`maintenance_hostid`     bigint unsigned                           NOT NULL,
 	`maintenanceid`          bigint unsigned                           NOT NULL,
 	`hostid`                 bigint unsigned                           NOT NULL,
 	PRIMARY KEY (maintenance_hostid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `maintenances_hosts_1` ON `maintenances_hosts` (`maintenanceid`,`hostid`);
 CREATE INDEX `maintenances_hosts_2` ON `maintenances_hosts` (`hostid`);
 CREATE TABLE `maintenances_groups` (
@@ -973,7 +973,7 @@ CREATE TABLE `maintenances_groups` (
 	`maintenanceid`          bigint unsigned                           NOT NULL,
 	`groupid`                bigint unsigned                           NOT NULL,
 	PRIMARY KEY (maintenance_groupid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `maintenances_groups_1` ON `maintenances_groups` (`maintenanceid`,`groupid`);
 CREATE INDEX `maintenances_groups_2` ON `maintenances_groups` (`groupid`);
 CREATE TABLE `timeperiods` (
@@ -987,13 +987,13 @@ CREATE TABLE `timeperiods` (
 	`period`                 integer         DEFAULT '0'               NOT NULL,
 	`start_date`             integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (timeperiodid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `maintenances_windows` (
 	`maintenance_timeperiodid` bigint unsigned                           NOT NULL,
 	`maintenanceid`          bigint unsigned                           NOT NULL,
 	`timeperiodid`           bigint unsigned                           NOT NULL,
 	PRIMARY KEY (maintenance_timeperiodid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `maintenances_windows_1` ON `maintenances_windows` (`maintenanceid`,`timeperiodid`);
 CREATE INDEX `maintenances_windows_2` ON `maintenances_windows` (`timeperiodid`);
 CREATE TABLE `regexps` (
@@ -1001,7 +1001,7 @@ CREATE TABLE `regexps` (
 	`name`                   varchar(128)    DEFAULT ''                NOT NULL,
 	`test_string`            text                                      NOT NULL,
 	PRIMARY KEY (regexpid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `regexps_1` ON `regexps` (`name`);
 CREATE TABLE `expressions` (
 	`expressionid`           bigint unsigned                           NOT NULL,
@@ -1011,14 +1011,14 @@ CREATE TABLE `expressions` (
 	`exp_delimiter`          varchar(1)      DEFAULT ''                NOT NULL,
 	`case_sensitive`         integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (expressionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `expressions_1` ON `expressions` (`regexpid`);
 CREATE TABLE `ids` (
 	`table_name`             varchar(64)     DEFAULT ''                NOT NULL,
 	`field_name`             varchar(64)     DEFAULT ''                NOT NULL,
 	`nextid`                 bigint unsigned                           NOT NULL,
 	PRIMARY KEY (table_name,field_name)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `alerts` (
 	`alertid`                bigint unsigned                           NOT NULL,
 	`actionid`               bigint unsigned                           NOT NULL,
@@ -1031,13 +1031,13 @@ CREATE TABLE `alerts` (
 	`message`                text                                      NOT NULL,
 	`status`                 integer         DEFAULT '0'               NOT NULL,
 	`retries`                integer         DEFAULT '0'               NOT NULL,
-	`error`                  varchar(2048)   DEFAULT ''                NOT NULL,
+	`error`                  text                                      NULL,
 	`esc_step`               integer         DEFAULT '0'               NOT NULL,
 	`alerttype`              integer         DEFAULT '0'               NOT NULL,
 	`p_eventid`              bigint unsigned                           NULL,
 	`acknowledgeid`          bigint unsigned                           NULL,
 	PRIMARY KEY (alertid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `alerts_1` ON `alerts` (`actionid`);
 CREATE INDEX `alerts_2` ON `alerts` (`clock`);
 CREATE INDEX `alerts_3` ON `alerts` (`eventid`);
@@ -1050,22 +1050,25 @@ CREATE TABLE `history` (
 	`clock`                  integer         DEFAULT '0'               NOT NULL,
 	`value`                  double(16,4)    DEFAULT '0.0000'          NOT NULL,
 	`ns`                     integer         DEFAULT '0'               NOT NULL
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `history_1` ON `history` (`itemid`,`clock`);
+CREATE INDEX `history_2` ON `history` (`clock`);
 CREATE TABLE `history_uint` (
 	`itemid`                 bigint unsigned                           NOT NULL,
 	`clock`                  integer         DEFAULT '0'               NOT NULL,
 	`value`                  bigint unsigned DEFAULT '0'               NOT NULL,
 	`ns`                     integer         DEFAULT '0'               NOT NULL
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `history_uint_1` ON `history_uint` (`itemid`,`clock`);
+CREATE INDEX `history_uint_2` ON `history_uint` (`clock`);
 CREATE TABLE `history_str` (
 	`itemid`                 bigint unsigned                           NOT NULL,
 	`clock`                  integer         DEFAULT '0'               NOT NULL,
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	`ns`                     integer         DEFAULT '0'               NOT NULL
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `history_str_1` ON `history_str` (`itemid`,`clock`);
+CREATE INDEX `history_str_2` ON `history_str` (`clock`);
 CREATE TABLE `history_log` (
 	`itemid`                 bigint unsigned                           NOT NULL,
 	`clock`                  integer         DEFAULT '0'               NOT NULL,
@@ -1075,15 +1078,17 @@ CREATE TABLE `history_log` (
 	`value`                  text                                      NOT NULL,
 	`logeventid`             integer         DEFAULT '0'               NOT NULL,
 	`ns`                     integer         DEFAULT '0'               NOT NULL
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `history_log_1` ON `history_log` (`itemid`,`clock`);
+CREATE INDEX `history_log_2` ON `history_log` (`clock`);
 CREATE TABLE `history_text` (
 	`itemid`                 bigint unsigned                           NOT NULL,
 	`clock`                  integer         DEFAULT '0'               NOT NULL,
 	`value`                  text                                      NOT NULL,
 	`ns`                     integer         DEFAULT '0'               NOT NULL
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `history_text_1` ON `history_text` (`itemid`,`clock`);
+CREATE INDEX `history_text_2` ON `history_text` (`clock`);
 CREATE TABLE `proxy_history` (
 	`id`                     bigint unsigned                           NOT NULL auto_increment,
 	`itemid`                 bigint unsigned                           NOT NULL,
@@ -1099,7 +1104,7 @@ CREATE TABLE `proxy_history` (
 	`mtime`                  integer         DEFAULT '0'               NOT NULL,
 	`flags`                  integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (id)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `proxy_history_1` ON `proxy_history` (`clock`);
 CREATE TABLE `proxy_dhistory` (
 	`id`                     bigint unsigned                           NOT NULL auto_increment,
@@ -1112,7 +1117,7 @@ CREATE TABLE `proxy_dhistory` (
 	`dcheckid`               bigint unsigned                           NULL,
 	`dns`                    varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (id)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `proxy_dhistory_1` ON `proxy_dhistory` (`clock`);
 CREATE TABLE `events` (
 	`eventid`                bigint unsigned                           NOT NULL,
@@ -1123,9 +1128,9 @@ CREATE TABLE `events` (
 	`value`                  integer         DEFAULT '0'               NOT NULL,
 	`acknowledged`           integer         DEFAULT '0'               NOT NULL,
 	`ns`                     integer         DEFAULT '0'               NOT NULL,
-	`name`                   varchar(2048)   DEFAULT ''                NOT NULL,
+	`name`                   text                                      NULL,
 	PRIMARY KEY (eventid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `events_1` ON `events` (`source`,`object`,`objectid`,`clock`);
 CREATE INDEX `events_2` ON `events` (`source`,`object`,`clock`);
 CREATE TABLE `trends` (
@@ -1136,7 +1141,8 @@ CREATE TABLE `trends` (
 	`value_avg`              double(16,4)    DEFAULT '0.0000'          NOT NULL,
 	`value_max`              double(16,4)    DEFAULT '0.0000'          NOT NULL,
 	PRIMARY KEY (itemid,clock)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
+CREATE INDEX `trends_1` ON `trends` (`clock`);
 CREATE TABLE `trends_uint` (
 	`itemid`                 bigint unsigned                           NOT NULL,
 	`clock`                  integer         DEFAULT '0'               NOT NULL,
@@ -1145,7 +1151,8 @@ CREATE TABLE `trends_uint` (
 	`value_avg`              bigint unsigned DEFAULT '0'               NOT NULL,
 	`value_max`              bigint unsigned DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (itemid,clock)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
+CREATE INDEX `trends_uint_1` ON `trends_uint` (`clock`);
 CREATE TABLE `acknowledges` (
 	`acknowledgeid`          bigint unsigned                           NOT NULL,
 	`userid`                 bigint unsigned                           NOT NULL,
@@ -1154,7 +1161,7 @@ CREATE TABLE `acknowledges` (
 	`message`                varchar(255)    DEFAULT ''                NOT NULL,
 	`action`                 integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (acknowledgeid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `acknowledges_1` ON `acknowledges` (`userid`);
 CREATE INDEX `acknowledges_2` ON `acknowledges` (`eventid`);
 CREATE INDEX `acknowledges_3` ON `acknowledges` (`clock`);
@@ -1169,7 +1176,7 @@ CREATE TABLE `auditlog` (
 	`resourceid`             bigint unsigned DEFAULT '0'               NOT NULL,
 	`resourcename`           varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (auditid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `auditlog_1` ON `auditlog` (`userid`,`clock`);
 CREATE INDEX `auditlog_2` ON `auditlog` (`clock`);
 CREATE TABLE `auditlog_details` (
@@ -1180,7 +1187,7 @@ CREATE TABLE `auditlog_details` (
 	`oldvalue`               text                                      NOT NULL,
 	`newvalue`               text                                      NOT NULL,
 	PRIMARY KEY (auditdetailid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `auditlog_details_1` ON `auditlog_details` (`auditid`);
 CREATE TABLE `service_alarms` (
 	`servicealarmid`         bigint unsigned                           NOT NULL,
@@ -1188,7 +1195,7 @@ CREATE TABLE `service_alarms` (
 	`clock`                  integer         DEFAULT '0'               NOT NULL,
 	`value`                  integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (servicealarmid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `service_alarms_1` ON `service_alarms` (`serviceid`,`clock`);
 CREATE INDEX `service_alarms_2` ON `service_alarms` (`clock`);
 CREATE TABLE `autoreg_host` (
@@ -1200,7 +1207,7 @@ CREATE TABLE `autoreg_host` (
 	`listen_dns`             varchar(255)    DEFAULT ''                NOT NULL,
 	`host_metadata`          varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (autoreg_hostid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `autoreg_host_1` ON `autoreg_host` (`proxy_hostid`,`host`);
 CREATE TABLE `proxy_autoreg_host` (
 	`id`                     bigint unsigned                           NOT NULL auto_increment,
@@ -1211,7 +1218,7 @@ CREATE TABLE `proxy_autoreg_host` (
 	`listen_dns`             varchar(255)    DEFAULT ''                NOT NULL,
 	`host_metadata`          varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (id)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `proxy_autoreg_host_1` ON `proxy_autoreg_host` (`clock`);
 CREATE TABLE `dhosts` (
 	`dhostid`                bigint unsigned                           NOT NULL,
@@ -1220,7 +1227,7 @@ CREATE TABLE `dhosts` (
 	`lastup`                 integer         DEFAULT '0'               NOT NULL,
 	`lastdown`               integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (dhostid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `dhosts_1` ON `dhosts` (`druleid`);
 CREATE TABLE `dservices` (
 	`dserviceid`             bigint unsigned                           NOT NULL,
@@ -1234,7 +1241,7 @@ CREATE TABLE `dservices` (
 	`ip`                     varchar(39)     DEFAULT ''                NOT NULL,
 	`dns`                    varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (dserviceid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `dservices_1` ON `dservices` (`dcheckid`,`ip`,`port`);
 CREATE INDEX `dservices_2` ON `dservices` (`dhostid`);
 CREATE TABLE `escalations` (
@@ -1249,18 +1256,18 @@ CREATE TABLE `escalations` (
 	`itemid`                 bigint unsigned                           NULL,
 	`acknowledgeid`          bigint unsigned                           NULL,
 	PRIMARY KEY (escalationid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `escalations_1` ON `escalations` (`actionid`,`triggerid`,`itemid`,`escalationid`);
 CREATE TABLE `globalvars` (
 	`globalvarid`            bigint unsigned                           NOT NULL,
 	`snmp_lastsize`          bigint unsigned DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (globalvarid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `graph_discovery` (
 	`graphid`                bigint unsigned                           NOT NULL,
 	`parent_graphid`         bigint unsigned                           NOT NULL,
 	PRIMARY KEY (graphid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `graph_discovery_1` ON `graph_discovery` (`parent_graphid`);
 CREATE TABLE `host_inventory` (
 	`hostid`                 bigint unsigned                           NOT NULL,
@@ -1336,21 +1343,21 @@ CREATE TABLE `host_inventory` (
 	`poc_2_screen`           varchar(64)     DEFAULT ''                NOT NULL,
 	`poc_2_notes`            text                                      NOT NULL,
 	PRIMARY KEY (hostid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `housekeeper` (
 	`housekeeperid`          bigint unsigned                           NOT NULL,
 	`tablename`              varchar(64)     DEFAULT ''                NOT NULL,
 	`field`                  varchar(64)     DEFAULT ''                NOT NULL,
 	`value`                  bigint unsigned                           NOT NULL,
 	PRIMARY KEY (housekeeperid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `images` (
 	`imageid`                bigint unsigned                           NOT NULL,
 	`imagetype`              integer         DEFAULT '0'               NOT NULL,
 	`name`                   varchar(64)     DEFAULT '0'               NOT NULL,
 	`image`                  longblob                                  NOT NULL,
 	PRIMARY KEY (imageid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `images_1` ON `images` (`name`);
 CREATE TABLE `item_discovery` (
 	`itemdiscoveryid`        bigint unsigned                           NOT NULL,
@@ -1360,7 +1367,7 @@ CREATE TABLE `item_discovery` (
 	`lastcheck`              integer         DEFAULT '0'               NOT NULL,
 	`ts_delete`              integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (itemdiscoveryid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `item_discovery_1` ON `item_discovery` (`itemid`,`parent_itemid`);
 CREATE INDEX `item_discovery_2` ON `item_discovery` (`parent_itemid`);
 CREATE TABLE `host_discovery` (
@@ -1371,12 +1378,12 @@ CREATE TABLE `host_discovery` (
 	`lastcheck`              integer         DEFAULT '0'               NOT NULL,
 	`ts_delete`              integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (hostid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `interface_discovery` (
 	`interfaceid`            bigint unsigned                           NOT NULL,
 	`parent_interfaceid`     bigint unsigned                           NOT NULL,
 	PRIMARY KEY (interfaceid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `profiles` (
 	`profileid`              bigint unsigned                           NOT NULL,
 	`userid`                 bigint unsigned                           NOT NULL,
@@ -1388,7 +1395,7 @@ CREATE TABLE `profiles` (
 	`source`                 varchar(96)     DEFAULT ''                NOT NULL,
 	`type`                   integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (profileid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `profiles_1` ON `profiles` (`userid`,`idx`,`idx2`);
 CREATE INDEX `profiles_2` ON `profiles` (`userid`,`profileid`);
 CREATE TABLE `sessions` (
@@ -1397,20 +1404,20 @@ CREATE TABLE `sessions` (
 	`lastaccess`             integer         DEFAULT '0'               NOT NULL,
 	`status`                 integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (sessionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `sessions_1` ON `sessions` (`userid`,`status`,`lastaccess`);
 CREATE TABLE `trigger_discovery` (
 	`triggerid`              bigint unsigned                           NOT NULL,
 	`parent_triggerid`       bigint unsigned                           NOT NULL,
 	PRIMARY KEY (triggerid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `trigger_discovery_1` ON `trigger_discovery` (`parent_triggerid`);
 CREATE TABLE `application_template` (
 	`application_templateid` bigint unsigned                           NOT NULL,
 	`applicationid`          bigint unsigned                           NOT NULL,
 	`templateid`             bigint unsigned                           NOT NULL,
 	PRIMARY KEY (application_templateid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `application_template_1` ON `application_template` (`applicationid`,`templateid`);
 CREATE INDEX `application_template_2` ON `application_template` (`templateid`);
 CREATE TABLE `item_condition` (
@@ -1420,7 +1427,7 @@ CREATE TABLE `item_condition` (
 	`macro`                  varchar(64)     DEFAULT ''                NOT NULL,
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (item_conditionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `item_condition_1` ON `item_condition` (`itemid`);
 CREATE TABLE `application_prototype` (
 	`application_prototypeid` bigint unsigned                           NOT NULL,
@@ -1428,7 +1435,7 @@ CREATE TABLE `application_prototype` (
 	`templateid`             bigint unsigned                           NULL,
 	`name`                   varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (application_prototypeid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `application_prototype_1` ON `application_prototype` (`itemid`);
 CREATE INDEX `application_prototype_2` ON `application_prototype` (`templateid`);
 CREATE TABLE `item_application_prototype` (
@@ -1436,7 +1443,7 @@ CREATE TABLE `item_application_prototype` (
 	`application_prototypeid` bigint unsigned                           NOT NULL,
 	`itemid`                 bigint unsigned                           NOT NULL,
 	PRIMARY KEY (item_application_prototypeid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `item_application_prototype_1` ON `item_application_prototype` (`application_prototypeid`,`itemid`);
 CREATE INDEX `item_application_prototype_2` ON `item_application_prototype` (`itemid`);
 CREATE TABLE `application_discovery` (
@@ -1447,21 +1454,21 @@ CREATE TABLE `application_discovery` (
 	`lastcheck`              integer         DEFAULT '0'               NOT NULL,
 	`ts_delete`              integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (application_discoveryid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `application_discovery_1` ON `application_discovery` (`applicationid`);
 CREATE INDEX `application_discovery_2` ON `application_discovery` (`application_prototypeid`);
 CREATE TABLE `opinventory` (
 	`operationid`            bigint unsigned                           NOT NULL,
 	`inventory_mode`         integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (operationid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `trigger_tag` (
 	`triggertagid`           bigint unsigned                           NOT NULL,
 	`triggerid`              bigint unsigned                           NOT NULL,
 	`tag`                    varchar(255)    DEFAULT ''                NOT NULL,
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (triggertagid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `trigger_tag_1` ON `trigger_tag` (`triggerid`);
 CREATE TABLE `event_tag` (
 	`eventtagid`             bigint unsigned                           NOT NULL,
@@ -1469,7 +1476,7 @@ CREATE TABLE `event_tag` (
 	`tag`                    varchar(255)    DEFAULT ''                NOT NULL,
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (eventtagid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `event_tag_1` ON `event_tag` (`eventid`);
 CREATE TABLE `problem` (
 	`eventid`                bigint unsigned                           NOT NULL,
@@ -1483,9 +1490,9 @@ CREATE TABLE `problem` (
 	`r_ns`                   integer         DEFAULT '0'               NOT NULL,
 	`correlationid`          bigint unsigned                           NULL,
 	`userid`                 bigint unsigned                           NULL,
-	`name`                   varchar(2048)   DEFAULT ''                NOT NULL,
+	`name`                   text                                      NULL,
 	PRIMARY KEY (eventid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `problem_1` ON `problem` (`source`,`object`,`objectid`);
 CREATE INDEX `problem_2` ON `problem` (`r_clock`);
 CREATE INDEX `problem_3` ON `problem` (`r_eventid`);
@@ -1495,7 +1502,7 @@ CREATE TABLE `problem_tag` (
 	`tag`                    varchar(255)    DEFAULT ''                NOT NULL,
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (problemtagid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `problem_tag_1` ON `problem_tag` (`eventid`);
 CREATE INDEX `problem_tag_2` ON `problem_tag` (`tag`,`value`);
 CREATE TABLE `tag_filter` (
@@ -1505,7 +1512,7 @@ CREATE TABLE `tag_filter` (
 	`tag`                    varchar(255)    DEFAULT ''                NOT NULL,
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (tag_filterid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `event_recovery` (
 	`eventid`                bigint unsigned                           NOT NULL,
 	`r_eventid`              bigint unsigned                           NOT NULL,
@@ -1513,7 +1520,7 @@ CREATE TABLE `event_recovery` (
 	`correlationid`          bigint unsigned                           NULL,
 	`userid`                 bigint unsigned                           NULL,
 	PRIMARY KEY (eventid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `event_recovery_1` ON `event_recovery` (`r_eventid`);
 CREATE INDEX `event_recovery_2` ON `event_recovery` (`c_eventid`);
 CREATE TABLE `correlation` (
@@ -1524,7 +1531,7 @@ CREATE TABLE `correlation` (
 	`status`                 integer         DEFAULT '0'               NOT NULL,
 	`formula`                varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (correlationid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `correlation_1` ON `correlation` (`status`);
 CREATE UNIQUE INDEX `correlation_2` ON `correlation` (`name`);
 CREATE TABLE `corr_condition` (
@@ -1532,39 +1539,39 @@ CREATE TABLE `corr_condition` (
 	`correlationid`          bigint unsigned                           NOT NULL,
 	`type`                   integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (corr_conditionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `corr_condition_1` ON `corr_condition` (`correlationid`);
 CREATE TABLE `corr_condition_tag` (
 	`corr_conditionid`       bigint unsigned                           NOT NULL,
 	`tag`                    varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (corr_conditionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `corr_condition_group` (
 	`corr_conditionid`       bigint unsigned                           NOT NULL,
 	`operator`               integer         DEFAULT '0'               NOT NULL,
 	`groupid`                bigint unsigned                           NOT NULL,
 	PRIMARY KEY (corr_conditionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `corr_condition_group_1` ON `corr_condition_group` (`groupid`);
 CREATE TABLE `corr_condition_tagpair` (
 	`corr_conditionid`       bigint unsigned                           NOT NULL,
 	`oldtag`                 varchar(255)    DEFAULT ''                NOT NULL,
 	`newtag`                 varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (corr_conditionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `corr_condition_tagvalue` (
 	`corr_conditionid`       bigint unsigned                           NOT NULL,
 	`tag`                    varchar(255)    DEFAULT ''                NOT NULL,
 	`operator`               integer         DEFAULT '0'               NOT NULL,
 	`value`                  varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (corr_conditionid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `corr_operation` (
 	`corr_operationid`       bigint unsigned                           NOT NULL,
 	`correlationid`          bigint unsigned                           NOT NULL,
 	`type`                   integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (corr_operationid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `corr_operation_1` ON `corr_operation` (`correlationid`);
 CREATE TABLE `task` (
 	`taskid`                 bigint unsigned                           NOT NULL,
@@ -1574,13 +1581,13 @@ CREATE TABLE `task` (
 	`ttl`                    integer         DEFAULT '0'               NOT NULL,
 	`proxy_hostid`           bigint unsigned                           NULL,
 	PRIMARY KEY (taskid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `task_1` ON `task` (`status`,`proxy_hostid`);
 CREATE TABLE `task_close_problem` (
 	`taskid`                 bigint unsigned                           NOT NULL,
 	`acknowledgeid`          bigint unsigned                           NOT NULL,
 	PRIMARY KEY (taskid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `item_preproc` (
 	`item_preprocid`         bigint unsigned                           NOT NULL,
 	`itemid`                 bigint unsigned                           NOT NULL,
@@ -1588,7 +1595,7 @@ CREATE TABLE `item_preproc` (
 	`type`                   integer         DEFAULT '0'               NOT NULL,
 	`params`                 varchar(255)    DEFAULT ''                NOT NULL,
 	PRIMARY KEY (item_preprocid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `item_preproc_1` ON `item_preproc` (`itemid`,`step`);
 CREATE TABLE `task_remote_command` (
 	`taskid`                 bigint unsigned                           NOT NULL,
@@ -1605,19 +1612,19 @@ CREATE TABLE `task_remote_command` (
 	`parent_taskid`          bigint unsigned                           NOT NULL,
 	`hostid`                 bigint unsigned                           NOT NULL,
 	PRIMARY KEY (taskid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `task_remote_command_result` (
 	`taskid`                 bigint unsigned                           NOT NULL,
 	`status`                 integer         DEFAULT '0'               NOT NULL,
 	`parent_taskid`          bigint unsigned                           NOT NULL,
 	`info`                   text                                      NOT NULL,
 	PRIMARY KEY (taskid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `task_acknowledge` (
 	`taskid`                 bigint unsigned                           NOT NULL,
 	`acknowledgeid`          bigint unsigned                           NOT NULL,
 	PRIMARY KEY (taskid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `sysmap_shape` (
 	`sysmap_shapeid`         bigint unsigned                           NOT NULL,
 	`sysmapid`               bigint unsigned                           NOT NULL,
@@ -1638,14 +1645,14 @@ CREATE TABLE `sysmap_shape` (
 	`background_color`       varchar(6)      DEFAULT ''                NOT NULL,
 	`zindex`                 integer         DEFAULT '0'               NOT NULL,
 	PRIMARY KEY (sysmap_shapeid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `sysmap_shape_1` ON `sysmap_shape` (`sysmapid`);
 CREATE TABLE `sysmap_element_trigger` (
 	`selement_triggerid`     bigint unsigned                           NOT NULL,
 	`selementid`             bigint unsigned                           NOT NULL,
 	`triggerid`              bigint unsigned                           NOT NULL,
 	PRIMARY KEY (selement_triggerid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `sysmap_element_trigger_1` ON `sysmap_element_trigger` (`selementid`,`triggerid`);
 CREATE TABLE `httptest_field` (
 	`httptest_fieldid`       bigint unsigned                           NOT NULL,
@@ -1654,7 +1661,7 @@ CREATE TABLE `httptest_field` (
 	`name`                   varchar(255)    DEFAULT ''                NOT NULL,
 	`value`                  text                                      NOT NULL,
 	PRIMARY KEY (httptest_fieldid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `httptest_field_1` ON `httptest_field` (`httptestid`);
 CREATE TABLE `httpstep_field` (
 	`httpstep_fieldid`       bigint unsigned                           NOT NULL,
@@ -1663,7 +1670,7 @@ CREATE TABLE `httpstep_field` (
 	`name`                   varchar(255)    DEFAULT ''                NOT NULL,
 	`value`                  text                                      NOT NULL,
 	PRIMARY KEY (httpstep_fieldid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `httpstep_field_1` ON `httpstep_field` (`httpstepid`);
 CREATE TABLE `dashboard` (
 	`dashboardid`            bigint unsigned                           NOT NULL,
@@ -1671,14 +1678,14 @@ CREATE TABLE `dashboard` (
 	`userid`                 bigint unsigned                           NOT NULL,
 	`private`                integer         DEFAULT '1'               NOT NULL,
 	PRIMARY KEY (dashboardid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `dashboard_user` (
 	`dashboard_userid`       bigint unsigned                           NOT NULL,
 	`dashboardid`            bigint unsigned                           NOT NULL,
 	`userid`                 bigint unsigned                           NOT NULL,
 	`permission`             integer         DEFAULT '2'               NOT NULL,
 	PRIMARY KEY (dashboard_userid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `dashboard_user_1` ON `dashboard_user` (`dashboardid`,`userid`);
 CREATE TABLE `dashboard_usrgrp` (
 	`dashboard_usrgrpid`     bigint unsigned                           NOT NULL,
@@ -1686,7 +1693,7 @@ CREATE TABLE `dashboard_usrgrp` (
 	`usrgrpid`               bigint unsigned                           NOT NULL,
 	`permission`             integer         DEFAULT '2'               NOT NULL,
 	PRIMARY KEY (dashboard_usrgrpid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE UNIQUE INDEX `dashboard_usrgrp_1` ON `dashboard_usrgrp` (`dashboardid`,`usrgrpid`);
 CREATE TABLE `widget` (
 	`widgetid`               bigint unsigned                           NOT NULL,
@@ -1698,7 +1705,7 @@ CREATE TABLE `widget` (
 	`width`                  integer         DEFAULT '1'               NOT NULL,
 	`height`                 integer         DEFAULT '1'               NOT NULL,
 	PRIMARY KEY (widgetid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `widget_1` ON `widget` (`dashboardid`);
 CREATE TABLE `widget_field` (
 	`widget_fieldid`         bigint unsigned                           NOT NULL,
@@ -1713,7 +1720,7 @@ CREATE TABLE `widget_field` (
 	`value_graphid`          bigint unsigned                           NULL,
 	`value_sysmapid`         bigint unsigned                           NULL,
 	PRIMARY KEY (widget_fieldid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE INDEX `widget_field_1` ON `widget_field` (`widgetid`);
 CREATE INDEX `widget_field_2` ON `widget_field` (`value_groupid`);
 CREATE INDEX `widget_field_3` ON `widget_field` (`value_hostid`);
@@ -1724,11 +1731,11 @@ CREATE TABLE `task_check_now` (
 	`taskid`                 bigint unsigned                           NOT NULL,
 	`itemid`                 bigint unsigned                           NOT NULL,
 	PRIMARY KEY (taskid)
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 CREATE TABLE `dbversion` (
 	`mandatory`              integer         DEFAULT '0'               NOT NULL,
 	`optional`               integer         DEFAULT '0'               NOT NULL
-) ENGINE=InnoDB;
+) ENGINE=NDBCLUSTER;
 INSERT INTO dbversion VALUES ('3050068','3050068');
 ALTER TABLE `hosts` ADD CONSTRAINT `c_hosts_1` FOREIGN KEY (`proxy_hostid`) REFERENCES `hosts` (`hostid`);
 ALTER TABLE `hosts` ADD CONSTRAINT `c_hosts_2` FOREIGN KEY (`maintenanceid`) REFERENCES `maintenances` (`maintenanceid`);
